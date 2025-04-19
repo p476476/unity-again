@@ -1,7 +1,7 @@
 using Again.Runtime;
 using UnityEngine;
 
-namespace Again._Examples.Scripts
+namespace AgainExample.Scripts
 {
     public class HelloWorld : MonoBehaviour
     {

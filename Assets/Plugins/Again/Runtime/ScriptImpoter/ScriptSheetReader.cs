@@ -42,7 +42,7 @@ namespace Again.Runtime.ScriptImpoter
                 { "ShowSpine", CreateShowSpineCommand },
                 { "Wait", CreateWaitCommand },
                 { "ChangeBackground", CreateChangeBackgroundCommand },
-                { "HideBackground", CreateHideBackgroundCommand},
+                { "HideBackground", CreateHideBackgroundCommand },
                 { "ShowTransfer", CreateShowTransferCommand },
                 { "HideTransfer", CreateHideTransferCommand },
                 { "ChangeImageColor", CreateChangeImageColorCommand },
@@ -110,7 +110,7 @@ namespace Again.Runtime.ScriptImpoter
         {
             var propertyInfos = new List<PropertyInfo>
             {
-                new() { Name = "SoundName", Type = "string", CanBeEmpty = false }
+                new() { Name = "Name", Type = "string", CanBeEmpty = false }
             };
             var command = new PlaySoundCommand();
             SetProperties(command, propertyInfos, arg);
@@ -200,11 +200,11 @@ namespace Again.Runtime.ScriptImpoter
             var command = new ShowImageCommand();
             SetProperties(command, propertyInfos, dict);
             SetScaleProperty(command, dict);
-            
+
             // 沒有指定 ImageName 就用 Name
             if (!dict.ContainsKey("ImageName"))
                 command.ImageName = command.Name;
-            
+
             return command;
         }
 
@@ -327,7 +327,7 @@ namespace Again.Runtime.ScriptImpoter
             {
                 new() { Name = "ImageName", Type = "string", CanBeEmpty = true },
                 new() { Name = "Duration", Type = "float", CanBeEmpty = true },
-                new() { Name =  "ShowType", Type = "ShowAnimationType", CanBeEmpty = true },
+                new() { Name = "ShowType", Type = "ShowAnimationType", CanBeEmpty = true }
             };
             var command = new ChangeBackgroundCommand();
             SetProperties(command, propertyInfos, dict);
@@ -340,7 +340,7 @@ namespace Again.Runtime.ScriptImpoter
         {
             var propertyInfos = new List<PropertyInfo>
             {
-                new() { Name = "Duration", Type = "float", CanBeEmpty = true },
+                new() { Name = "Duration", Type = "float", CanBeEmpty = true }
             };
             var command = new HideBackgroundCommand();
             SetProperties(command, propertyInfos, dict);
@@ -379,7 +379,7 @@ namespace Again.Runtime.ScriptImpoter
             var showSpineCommand = new ShowSpineCommand();
             SetProperties(showSpineCommand, propertyInfos, dict);
             SetScaleProperty(showSpineCommand, dict);
-            
+
             // 沒有指定 SpineName 就用 Name
             if (!dict.ContainsKey("SpineName"))
                 showSpineCommand.SpineName = showSpineCommand.Name;
@@ -649,13 +649,15 @@ namespace Again.Runtime.ScriptImpoter
                 c.g = float.Parse(matches[1].Value) / 255;
                 c.b = float.Parse(matches[2].Value) / 255;
                 c.a = 1;
-            } else if (matches.Count == 4)
+            }
+            else if (matches.Count == 4)
             {
                 c.r = float.Parse(matches[0].Value) / 255;
                 c.g = float.Parse(matches[1].Value) / 255;
                 c.b = float.Parse(matches[2].Value) / 255;
                 c.a = float.Parse(matches[3].Value) / 255;
             }
+
             return c;
         }
 
@@ -730,7 +732,7 @@ namespace Again.Runtime.ScriptImpoter
                 }
             }
         }
-        
+
         private static void SetScaleProperty(IScalableCommand command, Dictionary<string, string> dict)
         {
             if (dict.TryGetValue("Scale", out var scaleString))
@@ -738,7 +740,7 @@ namespace Again.Runtime.ScriptImpoter
                 command.ScaleX = command.ScaleY = float.Parse(scaleString);
                 return;
             }
-            
+
             if (dict.TryGetValue("ScaleX", out var scaleX))
                 command.ScaleX = float.Parse(scaleX);
             if (dict.TryGetValue("ScaleY", out var scaleY))

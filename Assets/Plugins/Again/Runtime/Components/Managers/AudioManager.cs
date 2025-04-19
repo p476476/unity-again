@@ -6,9 +6,9 @@ namespace Again.Runtime.Components.Managers
     {
         public AudioSource audioSource;
 
-        public void PlayAudio(string audioName)
+        public void PlaySound(string soundName)
         {
-            var audioClip = Resources.Load<AudioClip>($"audio/{audioName}");
+            var audioClip = Resources.Load<AudioClip>($"Sounds/{soundName}");
             audioSource.PlayOneShot(audioClip);
         }
     }

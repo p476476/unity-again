@@ -121,7 +121,7 @@ namespace Again.Runtime.Components.Views
             if (_audioSource.gameObject.activeSelf)
                 _audioSource.Play();
             _textAnim = dialogueText
-                .DOText(text, isSkip ? 0 : text.Length / textSpeed / _textSpeedScale)
+                .DOText(text, text.Length / textSpeed / _textSpeedScale)
                 .OnComplete(() =>
                 {
                     _completeTimer = 0;

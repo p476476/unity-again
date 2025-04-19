@@ -9,7 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Again._Examples.Scripts
+namespace AgainExample.Scripts
 {
     public class SheetSelectView : MonoBehaviour
     {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Again.Runtime.Commands;
 using Again.Runtime.Enums;
 using Unity.Plastic.Newtonsoft.Json.Linq;
+using UnityEngine;
 
 namespace Again.Runtime.ScriptImpoter
 {
@@ -50,6 +51,8 @@ namespace Again.Runtime.ScriptImpoter
         {
             var url = string.Format(URLFormat, _sheetID, scriptName);
             var data = await FetchData(url);
+            if (data == null)
+                return new List<Command>();
             var lines = data.Split(",\"\"\n").ToList();
             lines.RemoveAt(0);
             var data2D = new List<List<string>>();
@@ -68,6 +71,8 @@ namespace Again.Runtime.ScriptImpoter
         {
             var url = string.Format(URLFormat, _sheetID, TranslationSheetName);
             var data = await FetchData(url);
+            if (data == null)
+                return new Dictionary<string, List<string>>();
             var lines = data.Split(",\"\"\n").ToList();
             var languageCount = Enum.GetNames(typeof(Language)).Length;
 
@@ -132,12 +137,12 @@ namespace Again.Runtime.ScriptImpoter
                 // 讀取響應內容並指定使用 UTF-8 編碼
                 var responseBytes = await response.Content.ReadAsByteArrayAsync();
                 var responseString = Encoding.UTF8.GetString(responseBytes);
-
+                
                 return responseString;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error fetching data: {ex.Message}");
+                Debug.Log($"Error fetching data: {ex.Message}");
                 return null;
             }
         }

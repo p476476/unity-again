@@ -19,4 +19,9 @@ MonoBehaviour:
   logView: {fileID: 3856453055566464369, guid: c02b6ac2ce202c34b9527cce260b276e, type: 3}
   optionMenuView: {fileID: 5642992602930132932, guid: c8c87a7781bebd44eb70213a29ca7fe7, type: 3}
   transferView: {fileID: 7178296838187549749, guid: 5bbcd95ad98267845aa1da29c8016b5e, type: 3}
-  spineInfos: []
+  spineInfos:
+  - Name: deer
+    OffsetX: 0
+    OffsetY: -0.5
+    ScaleX: 1
+    ScaleY: 1

@@ -1,12 +1,11 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Again.Runtime;
 using Again.Runtime.ScriptImpoter;
 using UnityEditor;
 using UnityEngine;
 
-namespace Plugins.Again.Editors
+namespace Again.Editors
 {
     public class SettingPanel : EditorWindow
     {

@@ -2,9 +2,10 @@
 
 ## 安裝
 - 到PackageManager安裝[InputSystem](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.7/manual/Installation.html)套件，裝完會跳出彈窗問要不要切到新的InputSystem，選是並自動重開Unity
+- 安裝[Unity Spine](https://zh.esotericsoftware.com/spine-unity-installation#%E4%BD%BF%E7%94%A8Unitypackage%E5%AE%89%E8%A3%85%E8%BF%90%E8%A1%8C%E6%97%B6)
 - 下載`AgainSystem.unitypackage`，將檔案匯入Unity
 - 開啟 [設定頁](#設定頁)並點擊 `建立設定檔` 按鈕
-- 開啟 `Assets/Again/Scenes/HelloWorld`，執行場景，確認有AVG正常執行
+- 開啟 `Assets/Plugin/AgainExample/Scenes/HelloWorld`，執行場景，確認有AVG正常執行
 - 額外測試Spine
   - 下載`Resources.unitypackage`並匯入，此為測試資源，用完可以刪除
   -  開啟 `Assets/Again/Scenes/HelloWorldSpine`，執行場景，確認AVG正常執行
@@ -12,9 +13,6 @@
 ## 範例
 - Scenes/HelloWorld
   - 最簡單的範例，執行HelloWorld腳本
-- Scenes/HelloWorldSpine
-  - 執行含有Spine動畫的腳本
-  - 記得要匯入`Resources.unitypackage`才有資源
 - Scenes/SpriteEditor
   - 可以快速測試已有的腳本
   - 記得要設定GoogleSheetId
@@ -58,6 +56,7 @@
 
 ## 如何新增一個 AgainSystem 到新場景
 - 將`Prefab/AgainSystem`或`Prefab/AgainSystemOrtho`擇一放入場景中
+- 將遊戲的主要 Camera 的 Tag 設為 MainCamera (AVG 會用 Overlay 的方式將畫面加到 MainCamera)
 - 場景中新增一個EventSystem
 - 場景中新增一個空物件，並加上程式碼
   ```csharp

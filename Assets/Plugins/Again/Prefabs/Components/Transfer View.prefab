@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4333272208121404193}
   - component: {fileID: 6834212968001203136}
   - component: {fileID: 399135617977915318}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Transfer View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,7 +115,7 @@ GameObject:
   - component: {fileID: 619904902489092710}
   - component: {fileID: 4497022942602526260}
   - component: {fileID: 8872259323671327081}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}

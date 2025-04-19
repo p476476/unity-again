@@ -15,7 +15,6 @@ namespace Again.Runtime
 {
     public class AgainSystem : MonoBehaviour
     {
-        private AgainSystemSetting _setting;
         [SerializeField] private Transform uiCanvas;
 
         private List<Command> _commands;
@@ -23,6 +22,7 @@ namespace Again.Runtime
         private bool _isAutoNext;
         private bool _isPause;
         private bool _isSkip;
+        private AgainSystemSetting _setting;
 
         public UnityEvent OnScriptFinished { get; } = new();
         public ITransferView TransferView { get; private set; }
@@ -32,7 +32,7 @@ namespace Again.Runtime
         public ImageManager ImageManager { get; private set; }
         public CameraManager CameraManager { get; private set; }
         public EventManager EventManager { get; private set; }
-        public AudioManager AudioManager { get; }
+        public AudioManager AudioManager { get; private set; }
 
         public static AgainSystem Instance { get; private set; }
 
@@ -42,15 +42,16 @@ namespace Again.Runtime
                 Instance = this;
             else
                 Destroy(transform.parent.gameObject);
-            
+
             _setting = AssetDatabase.LoadAssetAtPath<AgainSystemSetting>("Assets/Settings/AgainSettings.asset");
-            
+
             _commands = new List<Command>();
             EventManager = new EventManager();
             DialogueManager = GetComponent<DialogueManager>();
             SpineManager = GetComponent<SpineManager>();
             CameraManager = GetComponent<CameraManager>();
             ImageManager = GetComponent<ImageManager>();
+            AudioManager = GetComponent<AudioManager>();
             TransferView = Instantiate(_setting.transferView, uiCanvas).GetComponent<ITransferView>();
             DialogueManager.Init(uiCanvas, _setting);
 
