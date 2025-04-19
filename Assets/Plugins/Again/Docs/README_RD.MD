@@ -9,7 +9,7 @@
   - 確認額外的模組有勾選
   - ![image](./Images/dotween_panel_1.png)
   - ![image](./Images/dotween_panel_2.png)
-- 從 Unity上方 Tools > Again > Setting開啟設定頁
+- 從 Unity上方 Tools > Again > Setting開啟設定面板
   - 點擊 `建立設定檔` 按鈕
 - 開啟 `Assets/Plugin/AgainExample/Scenes/HelloWorld`，執行場景，確認有AVG正常執行
 
@@ -18,7 +18,7 @@
   - 最簡單的範例，執行HelloWorld腳本
 - AgainExample/Scenes/SpriteEditor
   - 可以快速測試已有的腳本
-  - 記得要設定到設定頁GoogleSheetId
+  - 記得要到設定面板更新GoogleSheetId
 - AgainExample/Scenes/SpriteEditorOrtho，同上但相機為正交相機
   
 ## 新增Google Sheet遠端腳本
@@ -26,9 +26,9 @@
 - 開啟[範例腳本](https://docs.google.com/spreadsheets/d/18vCXwuMSR7K0FUEEcHy7X5NzgtyWyUgr7sbeIRW74zs/edit?gid=1492752394#gid=1492752394)，點擊左上檔案>建立副本，複製試算表
 - 新的試算表網址中`https://docs.google.com/spreadsheets/d/XXXXX/edit`，`XXXXX`即為`Google Sheet ID`
 - 之後企劃可以在google sheet新增分頁並編輯腳本
-- Unity這邊到[設定頁](#設定頁)更新 `Google Sheet ID` 就能在遊戲中使用
+- Unity這邊到[設定面板](#設定面板)更新 `Google Sheet ID` 就能在遊戲中使用
 
-## 設定頁
+## 設定面板
 - 可從Unity上方 Tools > Again > Setting開啟
   - ![image](./Images/open_setting.png)
 -   General分頁
@@ -193,7 +193,7 @@
 - 可用`AgainSystem.Instance.SetLanguage(Language.Chinese)`切換中文等語言
   
 ## 改為讀取本地腳本
-- 到[設定頁](#設定頁)先點擊 `下載遠端腳本` 按鈕下載到本地端
+- 到[設定面板](#設定面板)先點擊 `下載遠端腳本` 按鈕下載到本地端
 - 取消勾選 `Use Google Sheet` 選項
 - 重新啟動遊戲時，就會改讀取`Assets/Resources/CSV` 文件夾底下的腳本
 
