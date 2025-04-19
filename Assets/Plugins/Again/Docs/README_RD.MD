@@ -4,19 +4,22 @@
 - 到PackageManager安裝[InputSystem](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.7/manual/Installation.html)套件，裝完會跳出彈窗問要不要切到新的InputSystem，選是並自動重開Unity
 - 安裝[Unity Spine](https://zh.esotericsoftware.com/spine-unity-installation#%E4%BD%BF%E7%94%A8Unitypackage%E5%AE%89%E8%A3%85%E8%BF%90%E8%A1%8C%E6%97%B6)
 - 下載`AgainSystem.unitypackage`，將檔案匯入Unity
-- 開啟 [設定頁](#設定頁)並點擊 `建立設定檔` 按鈕
+- 設定DOTewwn
+  - Unity上方 Tools > Demigiant > DOTewwn Utility Panel開啟
+  - 確認額外的模組有勾選
+  - ![image](./Images/dotween_panel_1.png)
+  - ![image](./Images/dotween_panel_2.png)
+- 從 Unity上方 Tools > Again > Setting開啟設定頁
+  - 點擊 `建立設定檔` 按鈕
 - 開啟 `Assets/Plugin/AgainExample/Scenes/HelloWorld`，執行場景，確認有AVG正常執行
-- 額外測試Spine
-  - 下載`Resources.unitypackage`並匯入，此為測試資源，用完可以刪除
-  -  開啟 `Assets/Again/Scenes/HelloWorldSpine`，執行場景，確認AVG正常執行
 
 ## 範例
-- Scenes/HelloWorld
+- AgainExample/Scenes/HelloWorld
   - 最簡單的範例，執行HelloWorld腳本
-- Scenes/SpriteEditor
+- AgainExample/Scenes/SpriteEditor
   - 可以快速測試已有的腳本
-  - 記得要設定GoogleSheetId
-- Scenes/SpriteEditorOrtho，同上但相機為正交相機
+  - 記得要設定到設定頁GoogleSheetId
+- AgainExample/Scenes/SpriteEditorOrtho，同上但相機為正交相機
   
 ## 新增Google Sheet遠端腳本
 - 各專案都會有一個自己的GoogleSheet，用來編輯腳本
@@ -43,8 +46,7 @@
       - 有需要非公開可以自行申請並更換 ([教學](https://handsondataviz.org/google-sheets-api-key.html))
     - DialogueView, LogView, OptionMenuView, TransferView
       - 可更換的Prefab物件
-      - 可以到 `Plugins\Again\Prefabs\Components` 文件夾下找到預設的 Prefab
-      - 開發人員可以自己複製這些物件客製成自己的樣式後，在這邊替換掉，遊戲啟動時就會改用客製的Prefab來生成AVG畫面
+      - 可以到 `Plugins/Again/Prefabs/Components` 文件夾下找到預設的 Prefab，複製這些Prefab客製改成自己的樣式後在這邊更新，遊戲啟動時就會改用客製的Prefab來生成AVG畫面
     - 下載遠端腳本
       - 下載Google Sheet所有腳本到本地 `Assets/Resources/CSV` 文件夾
 -   Spine分頁
@@ -56,7 +58,11 @@
 
 ## 如何新增一個 AgainSystem 到新場景
 - 將`Prefab/AgainSystem`或`Prefab/AgainSystemOrtho`擇一放入場景中
-- 將遊戲的主要 Camera 的 Tag 設為 MainCamera (AVG 會用 Overlay 的方式將畫面加到 MainCamera)
+- 找到遊戲的 MainCamera
+  - Tag 設為 MainCamera
+  - Rendering 的 Culling Mask 將 `Avg` 取消勾選
+  - 加上 AudioListener 組件(沒有的話)
+  - 之後 AVG 的 Camera 會用 Overlay 的方式將畫面加到 MainCamera)
 - 場景中新增一個EventSystem
 - 場景中新增一個空物件，並加上程式碼
   ```csharp
@@ -74,8 +80,10 @@
   - Assets/Resources/Images，背景圖&圖片
   - Assets/Resources/Spines，Spine動畫
   - Assets/Resources/CSV，本地腳本
+  - Assets/Resources/Sounds，音效
 
 ## Prefabs
+- 以下介紹Again/Prefabs底下的預置物件
 - AgainSystem
   - 主要的AVG系統Prefab
 - AgainSystemOrtho
