@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8609838217130996944}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Spine View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -275,7 +275,7 @@ GameObject:
   - component: {fileID: 2877629038122445415}
   - component: {fileID: 5029504863866215043}
   - component: {fileID: 4215736909108350882}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Left Screen Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -348,7 +348,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4358218807397633737}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Image View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -442,7 +442,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 540
   m_Depth: 2
   m_CullingMask:
     serializedVersion: 2
@@ -513,7 +513,7 @@ GameObject:
   - component: {fileID: 3708993115181267134}
   - component: {fileID: 2567816282516418040}
   - component: {fileID: 3418317449306184077}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Right Screen Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -590,7 +590,7 @@ GameObject:
   - component: {fileID: 6358991569855590955}
   - component: {fileID: 713871227283478117}
   - component: {fileID: 8447839353145368594}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Stage Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -604,7 +604,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3220570504470738758}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 26.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
@@ -749,7 +749,7 @@ GameObject:
   - component: {fileID: 9122666410945363980}
   - component: {fileID: 6326580651325403427}
   - component: {fileID: 5052841933413197289}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: UI Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -883,7 +883,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6425158845975367808}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Screen Mask View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -922,7 +922,7 @@ GameObject:
   - component: {fileID: 6044124798442247125}
   - component: {fileID: 5767629212024660148}
   - component: {fileID: 1226122867910172814}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: background1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -998,7 +998,7 @@ GameObject:
   - component: {fileID: 6749134153073185376}
   - component: {fileID: 685992143885649314}
   - component: {fileID: 8634723469054971639}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Backgound View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1014,7 +1014,7 @@ RectTransform:
   m_GameObject: {fileID: 8225149543592301824}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.009259258, y: 0.009259258, z: 0.009259258}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6044124798442247125}
@@ -1100,7 +1100,7 @@ GameObject:
   - component: {fileID: 2929889258378445461}
   - component: {fileID: 2969182076673930650}
   - component: {fileID: 7576441533051174709}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: background2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

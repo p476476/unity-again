@@ -26,6 +26,8 @@ namespace AgainExample.Scripts
             { 2, Language.Japanese }
         };
 
+        private bool isUpdating;
+
         private void Awake()
         {
             transform.localPosition = Vector3.zero;
@@ -78,6 +80,10 @@ namespace AgainExample.Scripts
 
         public async void UpdatePages()
         {
+            if (isUpdating)
+                return;
+
+            isUpdating = true;
             buttonContainer.DestroyChildren();
             AgainSystem.Instance.ReloadTranslation();
 
@@ -96,6 +102,8 @@ namespace AgainExample.Scripts
                     .GetComponent<Button>()
                     .onClick.AddListener(() => OnClickPageButton(page));
             }
+
+            isUpdating = false;
         }
 
         private void OnClickPageButton(string page)

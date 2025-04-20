@@ -126,7 +126,7 @@ namespace Again.Runtime.Components.Views
             {
                 characterText.text = character;
                 dialogueText.text = text;
-                _textAnimationState = TextAnimationState.Complete;
+                _textAnimationState = TextAnimationState.Wait;
                 _completeTimer = 0;
                 onComplete?.Invoke();
                 return;
