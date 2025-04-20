@@ -2,12 +2,13 @@
 
 ## 新功能
 -   支援 unity6 版本(6000.0.40f1)
--   對話新增自動撥放和skip對話功能
 -   新增 Call 指令，可以執行另一個對話腳本
 -   新增 PlaySound指令，可以撥放音效
 -   新增 HideBackground 指令，可以關閉或淡出背景
+-   對話新增auto和skip對話功能
+-   新增對話紀錄頁(開發中)
 -   新增設定面板，可參考[設定面板說明](./README_RD.MD#設定面板)
--   所有指令新增Join參數，可以和上一個指令同時執行
+-   所有指令新增Join參數，將上Join=True時，可以和上一個指令同時執行
 
 ## 修正
 -   修正Mac從Google Sheet抓資料便亂碼問題
@@ -16,7 +17,7 @@
 
 ## 優化
 -   移除doozy，都改用原生的UI
--   將可修改的物件做成prefab，改用prefab生成AVG物件，可到設定面板更換自己的prefab
+-   將可修改的物件做成prefab，改用prefab生成AVG物件，可到設定面板更換自己的prefab，可參考[設定面板說明](./README_RD.MD#設定面板)
 -   整理Avg個畫面的顯示層級(Order)，可參考[顯示層級說明](./README_RD.MD#顯示層級)
 -   執行腳本時Camera改用overlay的方式加到main camera上，解決需要切換開關攝影機的問題
 -   ShowSpine, ScaleSpine, ShowImage, ScaleImage 的新增參數ScaleX 和 ScaleY 可以個別縮放

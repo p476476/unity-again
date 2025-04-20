@@ -452,18 +452,19 @@ namespace Again.Runtime.Components.Managers
 
             var spineAnimation = go.GetComponentInChildren<SkeletonAnimation>();
             var material = spineAnimation.skeletonDataAsset.atlasAssets[0].PrimaryMaterial;
-            material.SetColor("_Color", Color.white);
-            material.SetColor("_Black", Color.black);
 
             switch (command.ChangeColorType)
             {
                 case ChangeColorType.None:
+                    material.SetFloat("_FillPhase", 0f);
                     break;
                 case ChangeColorType.Additive:
-                    material.SetColor("_Black", command.ColorDelta);
+                    material.SetColor("_FillColor", command.ColorDelta);
+                    material.SetFloat("_FillPhase", 0.5f);
                     break;
                 case ChangeColorType.Subtractive:
-                    material.SetColor("_Color", command.ColorDelta);
+                    material.SetColor("_FillColor", command.ColorDelta);
+                    material.SetFloat("_FillPhase", 0.5f);
                     break;
             }
         }

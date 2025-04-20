@@ -1,4 +1,4 @@
-# Again System For 程式開發教學
+# Again System 開發教學 For RD
 
 ## 安裝
 - 到PackageManager安裝[InputSystem](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.7/manual/Installation.html)套件，裝完會跳出彈窗問要不要切到新的InputSystem，選是並自動重開Unity
@@ -197,3 +197,20 @@
 - 取消勾選 `Use Google Sheet` 選項
 - 重新啟動遊戲時，就會改讀取`Assets/Resources/CSV` 文件夾底下的腳本
 
+## 程式碼架構
+- (TODO) 待更新
+- `AgainSystem` - 主要系統，負責管理設定值和所有模組
+- `Commands`
+  - `Command.cs` - 指令的基底類別
+  - `...Command` - 其他實際指令
+- `Components`
+  - `Manager` - 系統核心模組目錄
+    - `CameraManager.cs` - 管理攝影機的 Unity Component
+    - `DialogueManager.cs` - 管理對話欄的 Unity Component
+    - `SpineManager.cs` - 管理 Spine 的 Unity Component
+    - `SpineManager.cs` - 管理 Image 的 Unity Component
+    - `EventManager.cs` - 事件處理
+- `ScriptImpoter` - 載入和處理AVG腳本
+  - `GoogleSheetImporter` - 讀取 Google Sheet 資料
+  - `LocalSheetImporter` - 讀取本地 Sheet 資料
+  - `ScriptSheetReader` - 解析轉換成Command
