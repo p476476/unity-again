@@ -35,5 +35,5 @@
 - [x]對話紀錄
 
 ## 第三方套件
-- [DOTween](https://dotween.demigiant.com/) - 一種簡單且高效的方式，用程式碼來創建和管理物件的動畫的工具
-- [Spine](https://zh.esotericsoftware.com/spine-unity-download) - 2D 骨骼動畫工具
+- [DOTween](https://dotween.demigiant.com/) - 一種簡單且高效的方式，用程式碼來創建和管理物件的動畫的工具 (1.0.380)
+- [Spine](https://zh.esotericsoftware.com/spine-unity-download) - 2D 骨骼動畫工具 (4.2.100)

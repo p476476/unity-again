@@ -9,6 +9,7 @@
 -   新增對話紀錄頁(開發中)
 -   新增設定面板，可參考[設定面板說明](./README_RD.MD#設定面板)
 -   所有指令新增Join參數，將上Join=True時，可以和上一個指令同時執行
+-   新增下載所有腳本到本地端功能，並且可以切換成執行本地端的腳本，可參考[設定面板說明](./README_RD.MD#設定面板)
 
 ## 修正
 -   修正Mac從Google Sheet抓資料便亂碼問題
@@ -22,8 +23,8 @@
 -   執行腳本時Camera改用overlay的方式加到main camera上，解決需要切換開關攝影機的問題
 -   ShowSpine, ScaleSpine, ShowImage, ScaleImage 的新增參數ScaleX 和 ScaleY 可以個別縮放
 -   背景圖和圖片統一放在 Resources/Images 底下
--   ShowBackground 新增 Type 參數，可以做淡入效果
--   ShowImage 新增 ImageName 參數，處理顯示多個相同物件情況，讓Name表示物件名；ImageName表示圖檔名
--   ShowSpine 新增 SpineName 參數，處理顯示多個相同物件情況，讓Name表示物件名；SpineName表示圖檔名
+-   ChangeBackground 新增 ShowType 參數，當 `ShowType=Fade` 可以做淡入效果
+-   ShowImage 新增 ImageName 參數，處理顯示多個相同物件情況，讓 Name 表示物件名； ImageName 表示圖檔名
+-   ShowSpine 新增 SpineName 參數，處理顯示多個相同物件情況，讓 Name 表示物件名； SpineName 表示圖檔名
 
 																			
