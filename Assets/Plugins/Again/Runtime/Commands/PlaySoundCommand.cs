@@ -6,7 +6,8 @@ namespace Again.Runtime.Commands
 
         public override void Execute()
         {
-            AgainSystem.Instance.AudioManager.PlaySound(Name);
+            if (!IsSkip)
+                AgainSystem.Instance.AudioManager.PlaySound(Name);
             AgainSystem.Instance.NextCommand();
         }
     }

@@ -50,6 +50,11 @@ namespace Again.Runtime.Components.Managers
             if (_isOptionMenuShowing) _optionMenuView.SetVisible(isVisible);
         }
 
+        public void QuickComplete()
+        {
+            _dialogueView.QuickComplete();
+        }
+
         public void ShowDialogue(SayCommand command, Action onComplete = null)
         {
             var callback = new Action(() => { onComplete?.Invoke(); });
@@ -84,7 +89,7 @@ namespace Again.Runtime.Components.Managers
 
         public void Shake(ShakeDialogueCommand command, Action onComplete = null)
         {
-            _dialogueView.Shake(command.IsSkip ? 0 : command.Duration, command.Strength, command.Vibrato,
+            _dialogueView.Shake(command.IsSkip, command.Duration, command.Strength, command.Vibrato,
                 command.Randomness,
                 command.Snapping, command.FadeOut, command.ShakeType, onComplete);
         }

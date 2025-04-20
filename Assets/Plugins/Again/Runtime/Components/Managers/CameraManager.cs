@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Again.Runtime.Commands.Camera;
 using Again.Runtime.Common;
 using Again.Runtime.Enums;
@@ -12,6 +13,7 @@ namespace Again.Runtime.Components.Managers
     public class CameraManager : MonoBehaviour
     {
         public Camera avgCamera;
+        private readonly List<Tween> tweens = new();
         private Vector3 _originalPosition;
 
         private void Awake()
@@ -42,28 +44,34 @@ namespace Again.Runtime.Components.Managers
             return CameraManagerSaveData.ToJson(_originalPosition, avgCamera.transform);
         }
 
+        public void QuickComplete()
+        {
+            foreach (var tween in tweens) tween.Complete();
+        }
+
         public void Shake(ShakeCameraCommand command, Action onComplete = null)
         {
             var cameraTransform = avgCamera.transform;
-            var duration = command.Duration;
+            var duration = command.IsSkip ? 0.001f : command.Duration;
+            Tween tween = null;
             switch (command.ShakeType)
             {
                 case ShakeType.Horizontal:
-                    cameraTransform.DOShakePosition(duration, Vector3.right * command.Strength, command.Vibrato,
-                            command.Randomness, command.Snapping, command.FadeOut)
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = cameraTransform.DOShakePosition(duration, Vector3.right * command.Strength,
+                        command.Vibrato,
+                        command.Randomness, command.Snapping, command.FadeOut);
                     break;
                 case ShakeType.Vertical:
-                    cameraTransform.DOShakePosition(duration, Vector3.up * command.Strength, command.Vibrato,
-                            command.Randomness, command.Snapping, command.FadeOut)
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = cameraTransform.DOShakePosition(duration, Vector3.up * command.Strength, command.Vibrato,
+                        command.Randomness, command.Snapping, command.FadeOut);
                     break;
                 case ShakeType.HorizontalAndVertical:
-                    cameraTransform.DOShakePosition(duration, command.Strength,
-                            command.Vibrato, command.Randomness, command.Snapping, command.FadeOut)
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = cameraTransform.DOShakePosition(duration, command.Strength,
+                        command.Vibrato, command.Randomness, command.Snapping, command.FadeOut);
                     break;
             }
+
+            if (tween != null) TweenTool.AddTween(tweens, tween, onComplete);
         }
 
         public void LookAtObject(GameObject target, float duration, float scale, Vector2 pivot,
@@ -72,7 +80,7 @@ namespace Again.Runtime.Components.Managers
             //if is orthographic camera
             if (avgCamera.orthographic)
             {
-                Debug.LogError("LookAtObject only works with perspective camera");
+                Debug.Log("LookAtObject only works with perspective camera");
                 onComplete?.Invoke();
                 return;
             }
@@ -82,7 +90,7 @@ namespace Again.Runtime.Components.Managers
             var originalDistanceZ = Mathf.Abs(_originalPosition.z - position.z);
             var offsetZ = originalDistanceZ - originalDistanceZ / scale;
             var endPosition = new Vector3(position.x, position.y, _originalPosition.z + offsetZ);
-            avgCamera.transform.DOMove(endPosition, duration).OnComplete(() => onComplete?.Invoke());
+            TweenTool.AddTween(tweens, avgCamera.transform.DOMove(endPosition, duration), onComplete);
         }
 
         public void MoveBackCamera(MoveBackCameraCommand command, Action onComplete = null)
@@ -90,13 +98,13 @@ namespace Again.Runtime.Components.Managers
             //if is orthographic camera
             if (avgCamera.orthographic)
             {
-                Debug.LogError("MoveBackCamera only works with perspective camera");
+                Debug.Log("MoveBackCamera only works with perspective camera");
                 onComplete?.Invoke();
                 return;
             }
 
-            avgCamera.transform.DOMove(_originalPosition, command.IsSkip ? 0 : command.Duration)
-                .OnComplete(() => onComplete?.Invoke());
+            var duration = command.IsSkip ? 0 : command.Duration;
+            TweenTool.AddTween(tweens, avgCamera.transform.DOMove(_originalPosition, duration), onComplete);
         }
     }
 }

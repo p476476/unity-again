@@ -25,6 +25,8 @@ namespace Again.Runtime
         private AgainSystemSetting _setting;
 
         public UnityEvent OnScriptFinished { get; } = new();
+        public UnityEvent<bool> OnIsSkipChanged { get; } = new();
+        public UnityEvent<bool> OnIsAutoNextChanged { get; } = new();
         public ITransferView TransferView { get; private set; }
         public ISheetImporter SheetImporter { get; private set; }
         public DialogueManager DialogueManager { get; private set; }
@@ -157,6 +159,15 @@ namespace Again.Runtime
         public void SetSkip(bool isSkip)
         {
             _isSkip = isSkip;
+            if (isSkip)
+            {
+                CameraManager.QuickComplete();
+                SpineManager.QuickComplete();
+                ImageManager.QuickComplete();
+                DialogueManager.QuickComplete();
+            }
+
+            OnIsSkipChanged?.Invoke(isSkip);
         }
 
         public bool GetSkip()
@@ -167,6 +178,7 @@ namespace Again.Runtime
         public void SetAutoNext(bool isAutoNext)
         {
             _isAutoNext = isAutoNext;
+            OnIsAutoNextChanged?.Invoke(isAutoNext);
         }
 
         public bool GetAutoNext()

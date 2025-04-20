@@ -28,6 +28,7 @@ namespace Again.Runtime.Components.Managers
         public GameObject spineGameObjectPrefab;
         public GameObject spineView;
         private readonly List<SpineInfo> _spineInfos = new();
+        private readonly List<Tween> tweens = new();
         private Dictionary<string, GameObject> _spineGameObjectDict;
 
         private void Awake()
@@ -120,6 +121,11 @@ namespace Again.Runtime.Components.Managers
             return _spineGameObjectDict.TryGetValue(name, out var go) ? go : null;
         }
 
+        public void QuickComplete()
+        {
+            foreach (var tween in tweens) tween.Complete();
+        }
+
         public void Show(ShowSpineCommand command, Action onComplete = null)
         {
             var spineInfo = _spineInfos.Find(info => info.spineName == command.SpineName);
@@ -162,38 +168,32 @@ namespace Again.Runtime.Components.Managers
                     break;
                 case ShowAnimationType.Fade:
                     spineAnimation.skeleton.A = 0;
-                    DOTween
-                        .To(
-                            () => spineAnimation.skeleton.A,
-                            x => spineAnimation.skeleton.A = x,
-                            1,
-                            duration
-                        )
-                        .OnComplete(() => onComplete?.Invoke());
+                    TweenTool.AddTween(tweens, DOTween.To(
+                        () => spineAnimation.skeleton.A,
+                        x => spineAnimation.skeleton.A = x,
+                        1,
+                        duration
+                    ), onComplete);
                     break;
                 case ShowAnimationType.SlideFromLeft:
                     spineAnimation.PhysicsPositionInheritanceFactor = Vector2.zero;
                     var pos = spineRT.localPosition;
                     spineRT.localPosition = new Vector3(-parentWidth / 2, pos.y, pos.z);
-                    spineRT
-                        .DOLocalMoveX(pos.x, duration)
-                        .OnComplete(() =>
-                        {
-                            onComplete?.Invoke();
-                            spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one * PhysicsFactor;
-                        });
+                    TweenTool.AddTween(tweens, spineRT.DOLocalMoveX(pos.x, duration), () =>
+                    {
+                        onComplete?.Invoke();
+                        spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one * PhysicsFactor;
+                    });
                     break;
                 case ShowAnimationType.SlideFromRight:
                     spineAnimation.PhysicsPositionInheritanceFactor = Vector2.zero;
                     pos = spineRT.localPosition;
                     spineRT.localPosition = new Vector3(parentWidth / 2, pos.y, pos.z);
-                    spineRT.transform
-                        .DOLocalMoveX(pos.x, duration)
-                        .OnComplete(() =>
-                        {
-                            spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one * PhysicsFactor;
-                            onComplete?.Invoke();
-                        });
+                    TweenTool.AddTween(tweens, spineRT.transform.DOLocalMoveX(pos.x, duration), () =>
+                    {
+                        spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one * PhysicsFactor;
+                        onComplete?.Invoke();
+                    });
                     break;
             }
         }
@@ -223,7 +223,7 @@ namespace Again.Runtime.Components.Managers
                 spineHeight * spineScale * spineInfo.offsetRatio.y,
                 0
             );
-            
+
             spineGameObject.GetComponentInChildren<MeshRenderer>().sortingOrder = order;
 
             var material = spineAnimation.skeletonDataAsset.atlasAssets[0].PrimaryMaterial;
@@ -290,42 +290,34 @@ namespace Again.Runtime.Components.Managers
                     break;
                 case HideAnimationType.Fade:
                     spineAnimation.skeleton.A = 1;
-                    DOTween
-                        .To(
-                            () => spineAnimation.skeleton.A,
-                            x => spineAnimation.skeleton.A = x,
-                            0,
-                            duration
-                        )
-                        .OnComplete(() => _RemoveSpineAnimation(command.Name, onComplete));
+                    TweenTool.AddTween(tweens, DOTween.To(
+                        () => spineAnimation.skeleton.A,
+                        x => spineAnimation.skeleton.A = x,
+                        0,
+                        duration
+                    ), () => _RemoveSpineAnimation(command.Name, onComplete));
                     break;
                 case HideAnimationType.SlideToLeft:
                     spineAnimation.PhysicsPositionInheritanceFactor = Vector2.zero;
                     var spineWidth = spineAnimation.skeletonDataAsset.GetSkeletonData(true).Width *
                                      spineAnimation.skeletonDataAsset.scale;
-                    goRT.DOLocalMoveX(
-                            (spineView.GetComponent<RectTransform>().rect.width + spineWidth) * -0.5f,
-                            duration
-                        )
-                        .OnComplete(() =>
-                        {
-                            spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one * PhysicsFactor;
-                            _RemoveSpineAnimation(command.Name, onComplete);
-                        });
+                    var endValue = (spineView.GetComponent<RectTransform>().rect.width + spineWidth) * 0.5f;
+                    TweenTool.AddTween(tweens, goRT.DOLocalMoveX(endValue, duration), () =>
+                    {
+                        spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one * PhysicsFactor;
+                        _RemoveSpineAnimation(command.Name, onComplete);
+                    });
                     break;
                 case HideAnimationType.SlideToRight:
                     spineAnimation.PhysicsPositionInheritanceFactor = Vector2.zero;
                     spineWidth = spineAnimation.skeletonDataAsset.GetSkeletonData(true).Width *
                                  spineAnimation.skeletonDataAsset.scale;
-                    goRT.DOLocalMoveX(
-                            (spineView.GetComponent<RectTransform>().rect.width + spineWidth) * 0.5f,
-                            duration
-                        )
-                        .OnComplete(() =>
-                        {
-                            spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one * PhysicsFactor;
-                            _RemoveSpineAnimation(command.Name, onComplete);
-                        });
+                    endValue = (spineView.GetComponent<RectTransform>().rect.width + spineWidth) * 0.5f;
+                    TweenTool.AddTween(tweens, goRT.DOLocalMoveX(endValue, duration), () =>
+                    {
+                        spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one * PhysicsFactor;
+                        _RemoveSpineAnimation(command.Name, onComplete);
+                    });
                     break;
             }
         }
@@ -343,17 +335,15 @@ namespace Again.Runtime.Components.Managers
             var spineAnimation = go.GetComponentInChildren<SkeletonAnimation>();
             spineAnimation.PhysicsPositionInheritanceFactor = Vector2.zero;
 
+            var goRt = go.GetComponent<RectTransform>();
             var parentWidth = spineView.GetComponent<RectTransform>().rect.width;
-            go.GetComponent<RectTransform>()
-                .DOLocalMove(
-                    new Vector3(command.PosX * parentWidth / 2, command.PosY * parentWidth / 2, 0),
-                    command.IsSkip ? 0 : command.Duration
-                )
-                .OnComplete(() =>
-                {
-                    spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one;
-                    onComplete?.Invoke();
-                });
+            var endPosition = new Vector3(command.PosX * parentWidth / 2, command.PosY * parentWidth / 2, 0);
+            var duration = command.IsSkip ? 0 : command.Duration;
+            TweenTool.AddTween(tweens, goRt.DOLocalMove(endPosition, duration), () =>
+            {
+                spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one;
+                onComplete?.Invoke();
+            });
         }
 
         public void Scale(ScaleSpineCommand command, Action onComplete = null)
@@ -372,16 +362,14 @@ namespace Again.Runtime.Components.Managers
 
             var spineAnimation = go.GetComponentInChildren<SkeletonAnimation>();
             spineAnimation.PhysicsPositionInheritanceFactor = Vector2.zero;
+            var endScale = new Vector3(command.ScaleX, command.ScaleY, 1);
+            var duration = command.IsSkip ? 0 : command.Duration;
 
-            goRT.DOScale(
-                    new Vector3(command.ScaleX, command.ScaleY, 1),
-                    command.IsSkip ? 0 : command.Duration
-                )
-                .OnComplete(() =>
-                {
-                    onComplete?.Invoke();
-                    spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one * PhysicsFactor;
-                });
+            TweenTool.AddTween(tweens, goRT.DOScale(endScale, duration), () =>
+            {
+                onComplete?.Invoke();
+                spineAnimation.PhysicsPositionInheritanceFactor = Vector2.one * PhysicsFactor;
+            });
         }
 
         public void Jump(JumpSpineCommand command, Action onComplete = null)
@@ -393,12 +381,11 @@ namespace Again.Runtime.Components.Managers
                 return;
             }
 
-            var go = _spineGameObjectDict[command.Name];
-
-            var position = go.GetComponent<RectTransform>().localPosition;
-            go.GetComponent<RectTransform>()
-                .DOLocalJump(position, command.JumpPower, command.JumpCount, command.IsSkip ? 0 : command.Duration)
-                .OnComplete(() => onComplete?.Invoke());
+            var goRt = _spineGameObjectDict[command.Name].GetComponent<RectTransform>();
+            var position = goRt.localPosition;
+            TweenTool.AddTween(tweens,
+                goRt.DOLocalJump(position, command.JumpPower, command.JumpCount, command.IsSkip ? 0 : command.Duration)
+                , onComplete);
         }
 
         public void Shake(ShakeSpineCommand command, Action onComplete = null)
@@ -414,43 +401,43 @@ namespace Again.Runtime.Components.Managers
 
             var goRT = go.GetComponent<RectTransform>();
             var strength = command.Strength * ShakeFactor;
-            var duration = command.IsSkip ? 0 : command.Duration;
+            var duration = command.IsSkip ? 0.01f : command.Duration;
+            Tween tween = null;
             switch (command.ShakeType)
             {
                 case ShakeType.Horizontal:
-                    goRT.DOShakePosition(
-                            duration,
-                            Vector3.right * strength,
-                            command.Vibrato,
-                            command.Randomness,
-                            command.Snapping,
-                            command.FadeOut
-                        )
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = goRT.DOShakePosition(
+                        duration,
+                        Vector3.right * strength,
+                        command.Vibrato,
+                        command.Randomness,
+                        command.Snapping,
+                        command.FadeOut
+                    );
                     break;
                 case ShakeType.Vertical:
-                    goRT.DOShakePosition(
-                            duration,
-                            Vector3.up * strength,
-                            command.Vibrato,
-                            command.Randomness,
-                            command.Snapping,
-                            command.FadeOut
-                        )
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = goRT.DOShakePosition(
+                        duration,
+                        Vector3.up * strength,
+                        command.Vibrato,
+                        command.Randomness,
+                        command.Snapping,
+                        command.FadeOut
+                    );
                     break;
                 case ShakeType.HorizontalAndVertical:
-                    goRT.DOShakePosition(
-                            duration,
-                            strength,
-                            command.Vibrato,
-                            command.Randomness,
-                            command.Snapping,
-                            command.FadeOut
-                        )
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = goRT.DOShakePosition(
+                        duration,
+                        strength,
+                        command.Vibrato,
+                        command.Randomness,
+                        command.Snapping,
+                        command.FadeOut
+                    );
                     break;
             }
+
+            if (tween != null) TweenTool.AddTween(tweens, tween, onComplete);
         }
 
         public void ChangeColor(ChangeSpineColorCommand command)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Again.Runtime.Common;
 using Again.Runtime.Components.Interfaces;
 using Again.Runtime.Enums;
@@ -26,8 +27,6 @@ namespace Again.Runtime.Components.Views
         public TMP_Text dialogueText;
         public Button nextButton;
         public Button logButton;
-        public Button autoButton;
-        public Button skipButton;
         public float textSpeed = 10f;
         public int textSize = 50;
         public Sprite waitSprite;
@@ -35,8 +34,11 @@ namespace Again.Runtime.Components.Views
         public Image stateIcon;
         public GameObject visibleContainer;
         public GameObject characterContainer;
+        public GameObject autoButtonGameObject;
+        public GameObject skipButtonGameObject;
 
         [SerializeField] private InputActionAsset actionAsset;
+        private readonly List<Tween> tweens = new();
         protected AudioSource _audioSource;
         protected float _completeTimer;
 
@@ -45,13 +47,15 @@ namespace Again.Runtime.Components.Views
         protected TweenerCore<string, string, StringOptions> _textAnim;
         protected TextAnimationState _textAnimationState;
         protected float _textSpeedScale = 1f;
+        private IToggleButton autoButton;
+        private IToggleButton skipButton;
 
         protected void Awake()
         {
             nextButton.onClick.AddListener(_OnClickNextButton);
             logButton.onClick.AddListener(() => AgainSystem.Instance.EventManager.Emit("ShowLog"));
-            autoButton?.onClick.AddListener(_OnClickAutoButton);
-            skipButton?.onClick.AddListener(_OnClickSkipButton);
+            autoButton = autoButtonGameObject.GetComponent<IToggleButton>();
+            skipButton = skipButtonGameObject.GetComponent<IToggleButton>();
             _speedUpAction = actionAsset.FindActionMap("Dialogue").FindAction("SpeedUpText");
             _speedUpAction.performed += OnTextSpeedUp;
             _speedUpAction.canceled += OnTextSpeedUpCanceled;
@@ -61,9 +65,13 @@ namespace Again.Runtime.Components.Views
 
         protected void Start()
         {
-            var isAutoNext = AgainSystem.Instance.GetAutoNext();
-            if (autoButton != null)
-                autoButton.GetComponent<Image>().color = isAutoNext ? Color.white : Color.gray;
+            autoButton.Toggle(AgainSystem.Instance.GetAutoNext());
+            autoButton.SetOnClick(AgainSystem.Instance.SetAutoNext);
+            AgainSystem.Instance.OnIsAutoNextChanged.AddListener(autoButton.Toggle);
+
+            skipButton.Toggle(AgainSystem.Instance.GetSkip());
+            skipButton.SetOnClick(AgainSystem.Instance.SetSkip);
+            AgainSystem.Instance.OnIsSkipChanged.AddListener(skipButton.Toggle);
         }
 
         private void Update()
@@ -107,12 +115,22 @@ namespace Again.Runtime.Components.Views
             dialogueText.fontSize = (int)(textSize * scale);
         }
 
-        public virtual void ShowText(string character, string text, bool isSkip, Action onComplete = null)
+        public void ShowText(string character, string text, bool isSkip, Action onComplete = null)
         {
             gameObject.SetActive(true);
 
             if (_textAnim != null)
                 _textAnim.Kill();
+
+            if (isSkip)
+            {
+                characterText.text = character;
+                dialogueText.text = text;
+                _textAnimationState = TextAnimationState.Complete;
+                _completeTimer = 0;
+                onComplete?.Invoke();
+                return;
+            }
 
             _onComplete = onComplete;
             characterText.text = character;
@@ -127,6 +145,7 @@ namespace Again.Runtime.Components.Views
                     _completeTimer = 0;
                     stateIcon.sprite = nextSprite;
                     _textAnimationState = TextAnimationState.Complete;
+                    _textAnim = null;
                 });
             stateIcon.sprite = waitSprite;
             _textAnimationState = TextAnimationState.Playing;
@@ -156,7 +175,23 @@ namespace Again.Runtime.Components.Views
             dialogueText.text = text;
         }
 
+        public void QuickComplete()
+        {
+            if (_textAnimationState == TextAnimationState.Playing)
+            {
+                _textAnim.Complete();
+                _onComplete?.Invoke();
+            }
+            else if (_textAnimationState == TextAnimationState.Complete)
+            {
+                _onComplete?.Invoke();
+            }
+
+            foreach (var tween in tweens) tween.Complete();
+        }
+
         public void Shake(
+            bool isSkip,
             float duration,
             float strength,
             int vibrato,
@@ -167,10 +202,12 @@ namespace Again.Runtime.Components.Views
             Action onComplete = null
         )
         {
+            duration = isSkip ? 0.01f : duration;
+            Tween tween = null;
             switch (shakeType)
             {
                 case ShakeType.Horizontal:
-                    transform
+                    tween = transform
                         .DOShakePosition(
                             duration,
                             Vector3.right * strength,
@@ -178,11 +215,10 @@ namespace Again.Runtime.Components.Views
                             randomness,
                             snapping,
                             fadeOut
-                        )
-                        .OnComplete(() => onComplete?.Invoke());
+                        );
                     break;
                 case ShakeType.Vertical:
-                    transform
+                    tween = transform
                         .DOShakePosition(
                             duration,
                             Vector3.up * strength,
@@ -190,29 +226,22 @@ namespace Again.Runtime.Components.Views
                             randomness,
                             snapping,
                             fadeOut
-                        )
-                        .OnComplete(() => onComplete?.Invoke());
+                        );
                     break;
                 case ShakeType.HorizontalAndVertical:
-                    transform
-                        .DOShakePosition(duration, strength, vibrato, randomness, snapping, fadeOut)
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = transform.DOShakePosition(duration, strength, vibrato, randomness, snapping, fadeOut);
                     break;
             }
-        }
 
-        private void _OnClickAutoButton()
-        {
-            var isAutoNext = !AgainSystem.Instance.GetAutoNext();
-            autoButton.GetComponent<Image>().color = isAutoNext ? Color.white : Color.gray;
-            AgainSystem.Instance.SetAutoNext(isAutoNext);
+            if (tween != null)
+                TweenTool.AddTween(tweens, tween, onComplete);
         }
 
         private void _OnClickSkipButton()
         {
             var isSkipNext = !AgainSystem.Instance.GetSkip();
-            skipButton.GetComponent<Image>().color = isSkipNext ? Color.white : Color.gray;
             AgainSystem.Instance.SetSkip(isSkipNext);
+            skipButton.Toggle(isSkipNext);
         }
 
         public void SpeedUpText()

@@ -19,6 +19,7 @@ namespace Again.Runtime.Components.Managers
         public Image background;
         public Image background2;
         private readonly Dictionary<string, GameObject> _imageObjectDict = new();
+        private readonly List<Tween> tweens = new();
 
         private void Awake()
         {
@@ -66,6 +67,11 @@ namespace Again.Runtime.Components.Managers
             return go;
         }
 
+        public void QuickComplete()
+        {
+            foreach (var tween in tweens) tween.Complete();
+        }
+
         public void ChangeBackground(ChangeBackgroundCommand command, Action onComplete = null)
         {
             background2.color = command.Color;
@@ -78,13 +84,14 @@ namespace Again.Runtime.Components.Managers
                     onComplete?.Invoke();
                     return;
                 }
+
                 background2.sprite = sprite;
             }
             else
             {
                 background2.sprite = null;
             }
-            
+
             var duration = command.IsSkip ? 0 : command.Duration;
 
             background.enabled = true;
@@ -94,7 +101,7 @@ namespace Again.Runtime.Components.Managers
             {
                 case ShowAnimationType.Fade:
                     background2.color = new Color(command.Color.r, command.Color.g, command.Color.b, 0);
-                    background2.DOFade(command.Color.a, duration).OnComplete(() =>
+                    TweenTool.AddTween(tweens, background2.DOFade(command.Color.a, duration), () =>
                     {
                         (background2, background) = (background, background2);
                         background2.enabled = false;
@@ -114,12 +121,9 @@ namespace Again.Runtime.Components.Managers
         public void HideBackground(HideBackgroundCommand command, Action onComplete = null)
         {
             var duration = command.IsSkip ? 0 : command.Duration;
-            background.DOFade(0, duration).OnComplete(() =>
-            {
-                onComplete?.Invoke();
-            });
+            TweenTool.AddTween(tweens, background.DOFade(0, duration), onComplete);
         }
-        
+
         public void Show(ShowImageCommand command, Action onComplete = null)
         {
             // find image by name in Resources/Images
@@ -152,6 +156,7 @@ namespace Again.Runtime.Components.Managers
 
             _imageObjectDict.Add(command.Name, go);
 
+            Tween tween = null;
             var duration = command.IsSkip ? 0 : command.Duration;
             switch (command.ShowType)
             {
@@ -160,23 +165,21 @@ namespace Again.Runtime.Components.Managers
                     break;
                 case ShowAnimationType.Fade:
                     spriteRenderer.color = new Color(1, 1, 1, 0);
-                    spriteRenderer
-                        .DOFade(1, duration)
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = spriteRenderer.DOFade(1, duration);
                     break;
                 case ShowAnimationType.SlideFromLeft:
                     var localPosition = rt.localPosition;
                     rt.localPosition = new Vector3(-parentWidth / 2, localPosition.y, 0);
-                    rt.DOLocalMoveX(localPosition.x, duration)
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = rt.DOLocalMoveX(localPosition.x, duration);
                     break;
                 case ShowAnimationType.SlideFromRight:
                     var localPosition1 = rt.localPosition;
                     rt.localPosition = new Vector3(parentWidth / 2, localPosition1.y, 0);
-                    rt.DOLocalMoveX(localPosition1.x, duration)
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = rt.DOLocalMoveX(localPosition1.x, duration);
                     break;
             }
+
+            if (tween != null) TweenTool.AddTween(tweens, tween, onComplete);
         }
 
         public void Change(ChangeImageCommand command)
@@ -215,6 +218,7 @@ namespace Again.Runtime.Components.Managers
             var spriteRenderer = go.GetComponentInChildren<SpriteRenderer>();
             var parentWidth = imageView.GetComponent<RectTransform>().rect.width;
             var duration = command.IsSkip ? 0 : command.Duration;
+            Tween tween = null;
             switch (command.HideType)
             {
                 case HideAnimationType.None:
@@ -222,31 +226,22 @@ namespace Again.Runtime.Components.Managers
                     onComplete?.Invoke();
                     break;
                 case HideAnimationType.Fade:
-                    spriteRenderer
-                        .DOFade(0, duration)
-                        .OnComplete(() =>
-                        {
-                            Destroy(spriteRenderer.transform.parent.gameObject);
-                            onComplete?.Invoke();
-                        });
+                    tween = spriteRenderer.DOFade(0, duration);
                     break;
                 case HideAnimationType.SlideToLeft:
-                    rt.DOLocalMoveX((parentWidth + rt.rect.width * rt.localScale.x) * -0.5f, duration)
-                        .OnComplete(() =>
-                        {
-                            Destroy(spriteRenderer.transform.parent.gameObject);
-                            onComplete?.Invoke();
-                        });
+                    tween = rt.DOLocalMoveX((parentWidth + rt.rect.width * rt.localScale.x) * -0.5f, duration);
                     break;
                 case HideAnimationType.SlideToRight:
-                    rt.DOLocalMoveX((parentWidth + rt.rect.width * rt.localScale.x) * 0.5f, duration)
-                        .OnComplete(() =>
-                        {
-                            Destroy(spriteRenderer.transform.parent.gameObject);
-                            onComplete?.Invoke();
-                        });
+                    tween = rt.DOLocalMoveX((parentWidth + rt.rect.width * rt.localScale.x) * 0.5f, duration);
                     break;
             }
+
+            if (tween != null)
+                TweenTool.AddTween(tweens, tween, () =>
+                {
+                    Destroy(spriteRenderer.transform.parent.gameObject);
+                    onComplete?.Invoke();
+                });
         }
 
         public void Move(MoveImageCommand command, Action onComplete = null)
@@ -267,8 +262,7 @@ namespace Again.Runtime.Components.Managers
             var targetY = command.PosY * parentHeight / 2;
             var duration = command.IsSkip ? 0 : command.Duration;
 
-            rt.DOLocalMove(new Vector3(targetX, targetY, 0), duration)
-                .OnComplete(() => onComplete?.Invoke());
+            TweenTool.AddTween(tweens, rt.DOLocalMove(new Vector3(targetX, targetY, 0), duration), onComplete);
         }
 
         public void Scale(ScaleImageCommand command, Action onComplete = null)
@@ -284,8 +278,9 @@ namespace Again.Runtime.Components.Managers
             var rt = go.GetComponent<RectTransform>();
             PivotTool.SetPivotInWorldSpace(rt, new Vector2(command.AnchorX, command.AnchorY));
             rt.pivot = new Vector2(command.AnchorX, command.AnchorY);
-            rt.DOScale(new Vector3(command.ScaleX, command.ScaleY, 1), command.IsSkip ? 0 : command.Duration)
-                .OnComplete(() => onComplete?.Invoke());
+            var duration = command.IsSkip ? 0 : command.Duration;
+            var scaleVector3 = new Vector3(command.ScaleX, command.ScaleY, 1);
+            TweenTool.AddTween(tweens, rt.DOScale(scaleVector3, duration), onComplete);
         }
 
         public void Jump(JumpImageCommand command, Action onComplete = null)
@@ -300,8 +295,9 @@ namespace Again.Runtime.Components.Managers
 
             var rt = go.GetComponent<RectTransform>();
             var position = rt.localPosition;
-            rt.DOLocalJump(position, command.JumpPower, command.JumpCount, command.IsSkip ? 0 : command.Duration)
-                .OnComplete(() => onComplete?.Invoke());
+            var duration = command.IsSkip ? 0 : command.Duration;
+            TweenTool.AddTween(tweens, rt.DOLocalJump(position, command.JumpPower, command.JumpCount, duration),
+                onComplete);
         }
 
         public void Shake(ShakeImageCommand command, Action onComplete = null)
@@ -316,43 +312,43 @@ namespace Again.Runtime.Components.Managers
 
             var goRT = go.GetComponent<RectTransform>();
             var strength = command.Strength * ShakeFactor;
-            var duration = command.IsSkip ? 0 : command.Duration;
+            var duration = command.IsSkip ? 0.001f : command.Duration;
+            Tween tween = null;
             switch (command.ShakeType)
             {
                 case ShakeType.Horizontal:
-                    goRT.DOShakePosition(
-                            duration,
-                            Vector3.right * strength,
-                            command.Vibrato,
-                            command.Randomness,
-                            command.Snapping,
-                            command.FadeOut
-                        )
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = goRT.DOShakePosition(
+                        duration,
+                        Vector3.right * strength,
+                        command.Vibrato,
+                        command.Randomness,
+                        command.Snapping,
+                        command.FadeOut
+                    );
                     break;
                 case ShakeType.Vertical:
-                    goRT.DOShakePosition(
-                            duration,
-                            Vector3.up * strength,
-                            command.Vibrato,
-                            command.Randomness,
-                            command.Snapping,
-                            command.FadeOut
-                        )
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = goRT.DOShakePosition(
+                        duration,
+                        Vector3.up * strength,
+                        command.Vibrato,
+                        command.Randomness,
+                        command.Snapping,
+                        command.FadeOut
+                    );
                     break;
                 case ShakeType.HorizontalAndVertical:
-                    goRT.DOShakePosition(
-                            duration,
-                            strength,
-                            command.Vibrato,
-                            command.Randomness,
-                            command.Snapping,
-                            command.FadeOut
-                        )
-                        .OnComplete(() => onComplete?.Invoke());
+                    tween = goRT.DOShakePosition(
+                        duration,
+                        strength,
+                        command.Vibrato,
+                        command.Randomness,
+                        command.Snapping,
+                        command.FadeOut
+                    );
                     break;
             }
+
+            if (tween != null) TweenTool.AddTween(tweens, tween, onComplete);
         }
 
         public void ChangeColor(ChangeImageColorCommand command)

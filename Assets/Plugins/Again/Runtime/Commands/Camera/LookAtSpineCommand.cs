@@ -22,7 +22,8 @@ namespace Again.Runtime.Commands.Camera
                 return;
             }
 
-            cameraManager.LookAtObject(go, Duration, Scale, new Vector2(AnchorX, AnchorY),
+            var duration = IsSkip ? 0f : Duration;
+            cameraManager.LookAtObject(go, duration, Scale, new Vector2(AnchorX, AnchorY),
                 () => AgainSystem.Instance.NextCommand());
         }
     }

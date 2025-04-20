@@ -11,8 +11,10 @@ namespace Again.Runtime.Components.Interfaces
         void SetVisible(bool isVisible);
         void SetCharacterAndText(string getCharacterString, string getTextString);
         void ScaleText(float commandScale);
+        void QuickComplete();
 
-        void Shake(float commandDuration, float commandStrength, int commandVibrato, float commandRandomness,
+        void Shake(bool isSkip, float commandDuration, float commandStrength, int commandVibrato,
+            float commandRandomness,
             bool commandSnapping, bool commandFadeOut, ShakeType commandShakeType, Action onComplete);
     }
 }
