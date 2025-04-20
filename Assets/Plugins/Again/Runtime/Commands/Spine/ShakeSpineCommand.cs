@@ -16,7 +16,7 @@ namespace Again.Runtime.Commands.Spine
         public override void Execute()
         {
             var spineManager = AgainSystem.Instance.SpineManager;
-            spineManager.Shake(this, () => AgainSystem.Instance.NextCommand());
+            spineManager.Shake(this, Next);
         }
     }
 }

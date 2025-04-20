@@ -6,7 +6,7 @@ namespace Again.Runtime.Commands.Camera
 
         public override void Execute()
         {
-            AgainSystem.Instance.CameraManager.MoveBackCamera(this, () => AgainSystem.Instance.NextCommand());
+            AgainSystem.Instance.CameraManager.MoveBackCamera(this, Next);
         }
     }
 }

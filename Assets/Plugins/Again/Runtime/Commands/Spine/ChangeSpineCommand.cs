@@ -12,7 +12,7 @@ namespace Again.Runtime.Commands.Spine
         {
             var spineManager = AgainSystem.Instance.SpineManager;
             spineManager.Change(this);
-            AgainSystem.Instance.NextCommand();
+            Next();
         }
     }
 }

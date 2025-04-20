@@ -13,7 +13,7 @@ namespace Again.Runtime.Commands.Spine
         public override void Execute()
         {
             var spineManager = AgainSystem.Instance.SpineManager;
-            spineManager.Hide(this, () => AgainSystem.Instance.NextCommand());
+            spineManager.Hide(this, Next);
         }
     }
 }

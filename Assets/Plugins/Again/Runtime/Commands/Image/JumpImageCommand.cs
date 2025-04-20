@@ -10,7 +10,7 @@ namespace Again.Runtime.Commands.Image
         public override void Execute()
         {
             var imageManager = AgainSystem.Instance.ImageManager;
-            imageManager.Jump(this, () => AgainSystem.Instance.NextCommand());
+            imageManager.Jump(this, Next);
         }
     }
 }

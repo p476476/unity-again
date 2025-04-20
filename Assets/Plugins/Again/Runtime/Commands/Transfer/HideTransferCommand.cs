@@ -5,7 +5,7 @@ namespace Again.Runtime.Commands.Transfer
         public override void Execute()
         {
             var view = AgainSystem.Instance.TransferView;
-            view.Hide(() => { AgainSystem.Instance.NextCommand(); });
+            view.Hide(() => { Next(); });
         }
     }
 }

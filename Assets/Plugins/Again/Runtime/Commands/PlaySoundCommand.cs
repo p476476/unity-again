@@ -8,7 +8,7 @@ namespace Again.Runtime.Commands
         {
             if (!IsSkip)
                 AgainSystem.Instance.AudioManager.PlaySound(Name);
-            AgainSystem.Instance.NextCommand();
+            Next();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Again.Runtime.Commands
             else
                 AgainSystem.Instance.EventManager.Emit(Name);
 
-            AgainSystem.Instance.NextCommand();
+            Next();
         }
     }
 }

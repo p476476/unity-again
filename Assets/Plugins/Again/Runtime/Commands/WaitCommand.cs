@@ -10,7 +10,7 @@ namespace Again.Runtime.Commands
         {
             var duration = IsSkip ? 0 : (int)(Duration * 1000);
             await Task.Delay(duration);
-            AgainSystem.Instance.NextCommand();
+            Next();
         }
     }
 }

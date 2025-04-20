@@ -13,7 +13,7 @@ namespace Again.Runtime.Commands.Image
         {
             var imageManager = AgainSystem.Instance.ImageManager;
             imageManager.ChangeColor(this);
-            AgainSystem.Instance.NextCommand();
+            Next();
         }
     }
 }

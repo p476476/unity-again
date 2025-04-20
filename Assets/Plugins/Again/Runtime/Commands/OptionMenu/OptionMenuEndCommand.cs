@@ -4,7 +4,7 @@ namespace Again.Runtime.Commands.OptionMenu
     {
         public override void Execute()
         {
-            AgainSystem.Instance.NextCommand();
+            Next();
         }
     }
 }

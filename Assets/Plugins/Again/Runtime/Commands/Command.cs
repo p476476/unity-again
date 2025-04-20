@@ -6,5 +6,11 @@ namespace Again.Runtime.Commands
         public bool IsSkip { get; set; }
         public bool IsJoin { get; set; } = false;
         public abstract void Execute();
+
+        public void Next()
+        {
+            if (IsJoin) return;
+            AgainSystem.Instance.NextCommand();
+        }
     }
 }

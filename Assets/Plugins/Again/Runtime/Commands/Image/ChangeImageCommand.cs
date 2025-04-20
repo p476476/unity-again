@@ -9,7 +9,7 @@ namespace Again.Runtime.Commands.Image
         {
             var imageManager = AgainSystem.Instance.ImageManager;
             imageManager.Change(this);
-            AgainSystem.Instance.NextCommand();
+            Next();
         }
     }
 }

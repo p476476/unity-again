@@ -18,12 +18,11 @@ namespace Again.Runtime.Commands.Camera
             if (go == null)
             {
                 Debug.LogError("Image Object not found");
-                AgainSystem.Instance.NextCommand();
+                Next();
                 return;
             }
 
-            cameraManager.LookAtObject(go, IsSkip ? 0 : Duration, Scale, new Vector2(AnchorX, AnchorY),
-                () => AgainSystem.Instance.NextCommand());
+            cameraManager.LookAtObject(go, IsSkip ? 0 : Duration, Scale, new Vector2(AnchorX, AnchorY), Next);
         }
     }
 }

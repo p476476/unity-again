@@ -15,7 +15,7 @@ namespace Again.Runtime.Commands.Camera
         public override void Execute()
         {
             var cameraManager = AgainSystem.Instance.CameraManager;
-            cameraManager.Shake(this, () => AgainSystem.Instance.NextCommand());
+            cameraManager.Shake(this, Next);
         }
     }
 }

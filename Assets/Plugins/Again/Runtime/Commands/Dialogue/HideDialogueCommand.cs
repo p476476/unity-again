@@ -5,10 +5,8 @@ namespace Again.Runtime.Commands.Dialogue
     {
         public override void Execute()
         {
-            var againSystem = AgainSystem.Instance;
-            var dialogueManager = againSystem.DialogueManager;
-            dialogueManager.Hide();
-            againSystem.NextCommand();
+            AgainSystem.Instance.DialogueManager.Hide();
+            Next();
         }
     }
 }

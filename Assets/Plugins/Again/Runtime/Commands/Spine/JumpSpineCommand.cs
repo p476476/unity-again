@@ -10,7 +10,7 @@ namespace Again.Runtime.Commands.Spine
         public override void Execute()
         {
             var spineManager = AgainSystem.Instance.SpineManager;
-            spineManager.Jump(this, () => AgainSystem.Instance.NextCommand());
+            spineManager.Jump(this, Next);
         }
     }
 }

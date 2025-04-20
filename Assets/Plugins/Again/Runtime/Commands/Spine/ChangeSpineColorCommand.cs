@@ -12,7 +12,7 @@ namespace Again.Runtime.Commands.Spine
         public override void Execute()
         {
             AgainSystem.Instance.SpineManager.ChangeColor(this);
-            AgainSystem.Instance.NextCommand();
+            Next();
         }
     }
 }

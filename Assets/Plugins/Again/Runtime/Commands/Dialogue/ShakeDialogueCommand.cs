@@ -15,7 +15,7 @@ namespace Again.Runtime.Commands.Dialogue
         public override void Execute()
         {
             var dialogueManager = AgainSystem.Instance.DialogueManager;
-            dialogueManager.Shake(this, () => AgainSystem.Instance.NextCommand());
+            dialogueManager.Shake(this, Next);
         }
     }
 }

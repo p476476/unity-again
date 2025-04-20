@@ -17,13 +17,13 @@ namespace Again.Runtime.Commands.Image
 
         public float PosY { get; set; } = 0;
 
-        public float ScaleX { get; set; } = 1f;
-        
-        public float ScaleY { get; set; } = 1f;
-
         public float NextDuration { get; set; } = -1f;
 
         public int Order { get; set; } = (int)Enums.Order.Image;
+
+        public float ScaleX { get; set; } = 1f;
+
+        public float ScaleY { get; set; } = 1f;
 
 
         public override void Execute()
@@ -31,12 +31,12 @@ namespace Again.Runtime.Commands.Image
             var imageManager = AgainSystem.Instance.ImageManager;
             if (NextDuration < 0)
             {
-                imageManager.Show(this, () => AgainSystem.Instance.NextCommand());
+                imageManager.Show(this, Next);
             }
             else
             {
                 imageManager.Show(this, () => { });
-                DOTween.Sequence().AppendInterval(NextDuration).OnComplete(() => AgainSystem.Instance.NextCommand());
+                DOTween.Sequence().AppendInterval(NextDuration).OnComplete(Next);
             }
         }
     }
