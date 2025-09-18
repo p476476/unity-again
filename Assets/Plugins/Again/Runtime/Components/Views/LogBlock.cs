@@ -9,9 +9,9 @@ namespace Again.Runtime.Components.Views
         public TMP_Text nameText;
         private RectTransform _rectTransform;
 
-        private void Update()
+        private void Awake()
         {
-            UpdateSize();
+            _rectTransform = GetComponent<RectTransform>();
         }
 
         public void SetColor(Color color)
@@ -29,13 +29,5 @@ namespace Again.Runtime.Components.Views
         {
             contentText.text = content;
         } // ReSharper disable Unity.PerformanceAnalysis
-        private void UpdateSize()
-        {
-            if (!_rectTransform) _rectTransform = GetComponent<RectTransform>();
-            contentText.rectTransform.sizeDelta =
-                new Vector2(contentText.rectTransform.sizeDelta.x, contentText.preferredHeight);
-            _rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x,
-                contentText.preferredHeight);
-        }
     }
 }

@@ -33,7 +33,7 @@ namespace Again.Runtime.Components.Views
 
         public virtual void Add(DialogueLog log)
         {
-            var logObject = Instantiate(logPrefab, logContainer);
+            var logObject = Instantiate(logPrefab, logContainer, false);
             logObject.SetActive(true);
             var logBlock = logObject.GetComponent<LogBlock>();
             logBlock.SetName(log.CharacterKey);
