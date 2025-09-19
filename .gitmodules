@@ -1,0 +1,3 @@
+[submodule "Assets/Plugins/Again6"]
+	path = Assets/Plugins/Again6
+	url = git@github.com:p476476/again.git
